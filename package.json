@@ -1,0 +1,15 @@
+{
+  "name": "the-faithfull-static",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Static migration of The Faithfull website; no runtime JavaScript dependencies.",
+  "scripts": {
+    "build": "python3 scripts/build.py",
+    "start": "python3 scripts/serve.py",
+    "check": "python3 scripts/check.py",
+    "test": "npm run build && npm run check && node scripts/browser-test.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
+  }
+}
