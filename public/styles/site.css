@@ -23,8 +23,9 @@ h1,h2,h3,p{margin:0}
 .container{width:1140px;padding:0 15px;margin:0 auto}
 .section{position:relative;min-height:100vh;display:flex;align-items:center;background-color:#000}
 .section h2{font:400 36px/46px Dosis,sans-serif;letter-spacing:3px;text-transform:uppercase;text-align:center;color:#fff;margin:20px 0 60px}
-.site-header{position:absolute;top:0;left:0;width:100%;z-index:10;height:100px}
-.header-inner{width:1170px;max-width:100%;padding:0 15px;margin:auto;display:flex;align-items:center;justify-content:center;min-height:100px}
+.site-header{position:fixed;top:0;left:0;width:100%;z-index:20;height:84px;background:rgba(0,0,0,.72)}
+.section[id],.intro[id]{scroll-margin-top:94px}
+.header-inner{width:1170px;max-width:100%;padding:0 15px;margin:auto;display:flex;align-items:center;justify-content:center;min-height:84px}
 .desktop-nav{display:flex;align-items:center;justify-content:center;gap:60px}
 .desktop-nav a{font:700 13px/14px Dosis,sans-serif;letter-spacing:3px;text-transform:uppercase;color:#fff;white-space:nowrap;padding:6px 12px}
 .desktop-nav a:hover{color:#dd3333}
@@ -109,8 +110,6 @@ h1,h2,h3,p{margin:0}
 .socials a:hover{color:var(--red)}
 footer{font:14px/32px Arial,sans-serif;color:#535353;padding-bottom:24px}
 footer a{color:red}
-footer a:last-child{color:#000}
-footer a:last-child:hover{color:var(--red)}
 .to-top{position:fixed;right:20px;bottom:20px;width:50px;height:50px;background:#0008;color:#fff;text-align:center;font:18px/22px Dosis,sans-serif;opacity:0;visibility:hidden;z-index:5;padding:3px}
 .to-top span{display:block;font-size:10px}
 .to-top.visible{visibility:visible;opacity:1}
@@ -169,7 +168,8 @@ dialog::backdrop{background:rgba(0,0,0,.8)}
 @media(max-width:767px){
   .container{width:100%}
   .section>.container{padding-right:15px}
-  .header-inner{width:100%;min-height:74px}
+  .site-header{height:66px}
+  .header-inner{width:100%;min-height:66px}
   .logo{margin-right:auto;max-width:80%}
   .hero-inner{padding-right:15px}
   .intro-bottom{left:15%;right:15%}
