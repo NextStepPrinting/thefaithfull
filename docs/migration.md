@@ -14,7 +14,7 @@ Reference: `https://thefaithfullpjtribute.com/`, inspected October 26, 2026 (cli
 | Gallery | Purple-lit singer background; 18 square thumbnails; full-size lightbox | Same images/order/crops, 6 columns desktop, 2 tablet, 1 narrow mobile; local WebP thumbnails with original JPEG lightbox |
 | Contact | CLICK HERE TO BOOK US!, booking email, Download Press Kit, 5 social icons | Same destinations, original branding font and icons |
 | Footer | © 2023 THE FAITHFULL; ALL RIGHTS RESERVED; POWERED BY ZENDO | Original year, wording, and credit destination retained (including its very dark original text color) |
-| Subscribe | JOIN OUR MAILING LIST and email form, submitted through WordPress to Mailchimp | Known gap: unavailable notice until client provides public signup URL; no fake form |
+| Subscribe | JOIN OUR MAILING LIST and email form, submitted through WordPress to Mailchimp | Original live-page appearance; direct POST to verified public Mailchimp form; real signup verification pending |
 
 ## Small functional corrections
 
@@ -44,6 +44,6 @@ The existing theme's sticky-header behavior was not independently established: t
 
 ## Outstanding before complete functional sign-off
 
-1. Obtain a **public Mailchimp signup URL or embed action URL**. Restore the original-looking form only once it can submit to the actual provider. Never embed a private API key in static code.
+1. Complete a client-approved live signup check. The signup page now posts directly to the public Mailchimp destination verified from the supplied hosted form (audience `27b646a88d`). Only email is required; optional name and ZIP fields are omitted to preserve the original page. Mailchimp handles subsequent verification, validation, and confirmation screens. No API key or Cloudflare secret is used. Local browser checks intercept the POST without contacting Mailchimp; actual delivery and audience membership remain unverified. The original live signup page's logo, background, layout CSS, and responsive behavior were used as the visual reference.
 2. Verify YouTube playback, the five SoundCloud tracks/profile, ticket destinations, social links, and Dropbox access in a trusted browser. A copy of the actual press kit can be hosted locally if the client supplies it; otherwise Dropbox remains the preserved dependency.
 3. Client visual/content review on a Cloudflare Pages preview, including live-source scrolling/header behavior. GitHub must have an approved production base branch before opening a conventional PR or configuring a production deployment.

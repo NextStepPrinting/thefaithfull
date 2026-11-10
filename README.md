@@ -38,7 +38,7 @@ python3 scripts/check.py
 ```text
 public/
   index.html              Homepage source; event markup is inserted during build
-  subscribe/index.html    Explicit pending-signup page; see limitations below
+  subscribe/index.html    Mailchimp signup form; see validation limitations below
   404.html                Real not-found page (prevents Pages' default SPA fallback)
   _headers                Cloudflare Pages response/cache headers
   styles/site.css         Local fonts, original layout, responsive breakpoints
@@ -108,8 +108,8 @@ Google Sheets is **not implemented**. The four-field data shape and `.event` mar
 - **YouTube:** the original promotional video ID `61RIRzGXOCA` opens in a modal embed, with the original watch link as a fallback. Video remains hosted by YouTube and is loaded only after a click. Availability, embed permissions, ads, and playback depend on YouTube. External playback could not be verified from this restricted environment; automated tests verify only the embed URL and modal lifecycle.
 - **SoundCloud:** the original site has five outgoing track links and a profile/set-list link, not embedded SoundCloud players. These are retained exactly. The separate homepage audio player uses the downloaded local `Go.mp3`. SoundCloud links require that service to remain available.
 - **Press kit:** the original Dropbox shared-folder URL is retained. The environment blocked Dropbox, so its contents could not be downloaded or verified. It remains an external dependency; replace the link with local client-provided kit files if supplied later. No replacement kit has been invented.
-- **Mailing list — unresolved:** the original `/subscribe/` form uses WordPress `admin-ajax.php`, a dynamic nonce, and a private server-side Mailchimp integration. Its public markup does not disclose a usable hosted signup URL. The static Subscribe page explicitly reports that online signup is unavailable and provides the existing contact email. It does **not** simulate success, collect addresses, or call the old WordPress backend. A public Mailchimp hosted signup URL or public embed action URL is required to restore signup and the original form appearance. Do not put a Mailchimp API key in this repository or frontend code.
+- **Mailing list — live verification pending:** the original-looking signup page now posts directly to the verified public Mailchimp form destination. It requires an email address and uses no API key, WordPress backend, or Cloudflare secret. Browser tests intercept the POST and verify its fields without creating a subscriber. A real signup and audience-membership check remain pending.
 - **Email and social links:** booking opens the visitor's mail client; Instagram, Facebook, Twitter, YouTube, SoundCloud, and the original footer credit remain external. No email is sent by this website.
 - **Reference inspection:** the live site's HTML, CSS, scripts, and media were retrieved with verified HTTPS. Direct Chromium navigation hit the environment's proxy-certificate trust error. Visual comparison therefore used a local inspection-only copy of the downloaded source at desktop, tablet, and mobile widths, with the local fonts loaded. This establishes a close visual reference, not independent verification of every live third-party service.
 
-See [docs/migration.md](docs/migration.md) for the detailed inventory. The WordPress AJAX subscription is the material functional gap; the migration should not be described as feature-complete until it is resolved or accepted by the client.
+See [docs/migration.md](docs/migration.md) for the detailed inventory. Mailchimp signup still needs a real end-to-end check; the migration should not be described as feature-complete until that check and the remaining external-service review are complete.

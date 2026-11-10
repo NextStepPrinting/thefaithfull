@@ -8,10 +8,21 @@
   <link rel="stylesheet" href="/styles/site.css">
 </head>
 <body>
-  <main class="subscription"><div class="subscription-inner">
+  <main class="subscription"><div class="subscription-container"><div class="subscription-inner">
+    <img class="subscription-logo" src="/assets/images/TF_Logo-LB_Glow.png" alt="The Faithfull — A tribute to Pearl Jam">
     <h1>JOIN OUR MAILING LIST</h1>
-    <p>Online signup is currently unavailable. For mailing list enquiries, please contact <a href="mailto:booking@thefaithfullpjtribute.com">booking@thefaithfullpjtribute.com</a>.</p>
-    <p><a href="/">Return to The Faithfull</a></p>
-  </div></main>
+    <form class="subscription-form" action="https://TheFaithfullPJTribute.us20.list-manage.com/subscribe/post" method="post">
+      <input type="hidden" name="u" value="8011db6d702b768de88ff9e14">
+      <input type="hidden" name="id" value="27b646a88d">
+      <label class="sr-only" for="signup-email">Email address</label>
+      <input id="signup-email" type="email" name="MERGE0" autocomplete="email" autocapitalize="off" placeholder="your.address@email.com" required>
+      <button type="submit" name="submit" value="Subscribe">Subscribe</button>
+      <div class="subscription-trap" aria-hidden="true">
+        <input type="text" name="b_name" tabindex="-1" autocomplete="off" aria-label="Leave name empty">
+        <input type="email" name="b_email" tabindex="-1" autocomplete="off" aria-label="Leave email empty">
+        <textarea name="b_comment" tabindex="-1" aria-label="Leave comment empty"></textarea>
+      </div>
+    </form>
+  </div></div></main>
 </body>
 </html>

@@ -3,13 +3,14 @@ const assert = require('node:assert/strict');
 const { spawn } = require('node:child_process');
 const { existsSync, mkdirSync, readFileSync, writeFileSync } = require('node:fs');
 const path = require('node:path');
+const http = require('node:http');
 const { chromium } = require('playwright');
 
 (async () => {
   const root = path.resolve(__dirname, '..');
-  const port = 8765;
+  const port = Number(process.env.TEST_PORT || 8765);
   const origin = `http://127.0.0.1:${port}`;
-  const server = spawn('python3', [path.join(root, 'scripts/serve.py'), '--port', String(port)], { stdio: 'ignore' });
+  const server = spawn(process.env.PYTHON_PATH || 'python3', [path.join(root, 'scripts/serve.py'), '--port', String(port)], { stdio: 'ignore' });
   let browser;
   let serverError;
   server.on('error', error => { serverError = error; });
@@ -20,7 +21,12 @@ const { chromium } = require('playwright');
     for (let attempt = 0; attempt < 50; attempt++) {
       if (serverError) throw serverError;
       if (server.exitCode !== null) throw new Error(`Local test server exited: ${server.exitCode}`);
-      try { if ((await fetch(origin)).ok) { ready = true; break; } } catch {}
+      const available = await new Promise(resolve => {
+        const request = http.get(origin, response => { response.resume(); resolve(response.statusCode === 200); });
+        request.on('error', () => resolve(false));
+        request.setTimeout(1000, () => { request.destroy(); resolve(false); });
+      });
+      if (available) { ready = true; break; }
       await new Promise(resolve => setTimeout(resolve, 100));
     }
     assert(ready, 'Local test server did not start');
@@ -99,6 +105,29 @@ const { chromium } = require('playwright');
       assert.equal(await page.locator('.video-frame iframe').count(), 0, 'Closing video must unload playback');
       await page.goto(`${origin}/subscribe/`);
       assert(await page.getByRole('heading', { name: 'JOIN OUR MAILING LIST' }).isVisible());
+      await page.evaluate(() => document.fonts.ready);
+      await page.screenshot({ path: path.join(root, 'test-results', `subscribe-${width}.png`), fullPage: true });
+      assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${width}: signup horizontal overflow`);
+      assert(await page.locator('.subscription-logo').evaluate(image => image.complete && image.naturalWidth > 0));
+      const email = page.getByRole('textbox', { name: 'Email address', exact: true });
+      await page.getByRole('button', { name: 'Subscribe', exact: true }).click();
+      assert(await email.evaluate(input => input.validity.valueMissing), 'Email is required');
+      await email.fill('invalid');
+      assert(await email.evaluate(input => input.validity.typeMismatch), 'Email format is validated');
+      await email.fill('signup-check@example.com');
+      await page.route('https://thefaithfullpjtribute.us20.list-manage.com/**', async route => {
+        assert.equal(route.request().method(), 'POST');
+        const data = new URLSearchParams(route.request().postData());
+        assert.equal(data.get('MERGE0'), 'signup-check@example.com');
+        assert.equal(data.get('u'), '8011db6d702b768de88ff9e14');
+        assert.equal(data.get('id'), '27b646a88d');
+        for (const field of ['b_name', 'b_email', 'b_comment']) assert.equal(data.get(field), '');
+        await route.fulfill({ status: 200, contentType: 'text/html', body: '<title>Intercepted form submission: no subscription sent</title>' });
+      });
+      await Promise.all([
+        page.waitForURL('https://thefaithfullpjtribute.us20.list-manage.com/subscribe/post'),
+        page.getByRole('button', { name: 'Subscribe', exact: true }).click(),
+      ]);
       await page.close();
       console.log(`PASS ${width}px: responsive layout, navigation, images, lightbox, console; embed wiring (external playback untested).`);
     }
