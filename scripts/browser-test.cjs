@@ -115,19 +115,35 @@ const { chromium } = require('playwright');
       await email.fill('invalid');
       assert(await email.evaluate(input => input.validity.typeMismatch), 'Email format is validated');
       await email.fill('signup-check@example.com');
-      await page.route('https://thefaithfullpjtribute.us20.list-manage.com/**', async route => {
-        assert.equal(route.request().method(), 'POST');
-        const data = new URLSearchParams(route.request().postData());
-        assert.equal(data.get('MERGE0'), 'signup-check@example.com');
-        assert.equal(data.get('u'), '8011db6d702b768de88ff9e14');
-        assert.equal(data.get('id'), '27b646a88d');
-        for (const field of ['b_name', 'b_email', 'b_comment']) assert.equal(data.get(field), '');
-        await route.fulfill({ status: 200, contentType: 'text/html', body: '<title>Intercepted form submission: no subscription sent</title>' });
+      await page.getByRole('button', { name: 'Subscribe', exact: true }).click();
+      await page.getByRole('link', { name: 'Open the Mailchimp signup form' }).waitFor();
+      assert.equal(page.url(), `${origin}/subscribe/`, 'Unavailable service must not redirect');
+
+      await page.route('https://challenges.cloudflare.com/turnstile/v0/api.js?*', route => route.fulfill({
+        contentType: 'application/javascript',
+        body: 'window.turnstile = { render: () => "test-widget", getResponse: () => "test-token", reset() {} };',
+      }));
+      let status = 502;
+      await page.route(`${origin}/api/subscribe`, route => {
+        if (route.request().method() === 'GET') return route.fulfill({ json: { siteKey: 'test-key' } });
+        assert.deepEqual(route.request().postDataJSON(), {
+          email: 'signup-check@example.com', token: 'test-token', trap: '',
+        });
+        return route.fulfill({ status, json: status === 200 ? { status: 'pending' } : { error: 'unavailable' } });
       });
-      await Promise.all([
-        page.waitForURL('https://thefaithfullpjtribute.us20.list-manage.com/subscribe/post'),
-        page.getByRole('button', { name: 'Subscribe', exact: true }).click(),
-      ]);
+      await page.reload();
+      await email.fill('signup-check@example.com');
+      const subscribe = page.getByRole('button', { name: 'Subscribe', exact: true });
+      await subscribe.click();
+      await page.getByRole('status').filter({ hasText: 'We couldn’t complete your signup' }).waitFor();
+      assert.equal(await email.inputValue(), 'signup-check@example.com', 'Keep email on error');
+      status = 200;
+      await subscribe.click();
+      await page.getByRole('status').filter({ hasText: 'Check your inbox' }).waitFor();
+      assert.equal(await email.inputValue(), '', 'Clear email after accepted signup');
+      assert.equal(page.url(), `${origin}/subscribe/`, 'Accepted signup must stay on the page');
+      assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+      await page.screenshot({ path: path.join(root, 'test-results', `subscribe-confirmation-${width}.png`), fullPage: true });
       await page.close();
       console.log(`PASS ${width}px: responsive layout, navigation, images, lightbox, console; embed wiring (external playback untested).`);
     }

@@ -6,11 +6,13 @@
   <title>Subscribe – THE FAITHFULL</title>
   <link rel="icon" href="/assets/images/cropped-cropped-icon-32x32.jpeg">
   <link rel="stylesheet" href="/styles/site.css">
+  <script src="/scripts/subscribe.js" defer></script>
 </head>
 <body>
   <main class="subscription"><div class="subscription-container"><div class="subscription-inner">
     <img class="subscription-logo" src="/assets/images/TF_Logo-LB_Glow.png" alt="The Faithfull — A tribute to Pearl Jam">
     <h1>JOIN OUR MAILING LIST</h1>
+    <p class="subscription-status" role="status" aria-live="polite" aria-atomic="true"></p>
     <form class="subscription-form" action="https://TheFaithfullPJTribute.us20.list-manage.com/subscribe/post" method="post">
       <input type="hidden" name="u" value="8011db6d702b768de88ff9e14">
       <input type="hidden" name="id" value="27b646a88d">
@@ -22,7 +24,9 @@
         <input type="email" name="b_email" tabindex="-1" autocomplete="off" aria-label="Leave email empty">
         <textarea name="b_comment" tabindex="-1" aria-label="Leave comment empty"></textarea>
       </div>
+      <div id="signup-verification"></div>
     </form>
+    <p class="subscription-fallback" hidden><a href="https://eepurl.com/hQ6UVH">Open the Mailchimp signup form</a></p>
   </div></div></main>
 </body>
 </html>
