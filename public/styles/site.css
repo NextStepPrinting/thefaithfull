@@ -147,6 +147,8 @@ dialog::backdrop{background:rgba(0,0,0,.8)}
 .subscription-status[data-state=error]{border-color:var(--red)}
 .subscription-fallback{text-align:left;font:400 14px/21px Arial,sans-serif}
 .subscription-fallback a{text-decoration:underline}
+.subscription-back{text-align:left;margin-top:16px;color:#fff;font:400 14px/22px Arial,sans-serif}
+.subscription-back a{text-decoration:underline}
 .subscription-trap{position:absolute;left:-5000px;width:1px;height:1px;overflow:hidden}
 @media(max-width:767px){.subscription{align-items:flex-start}.subscription-container{margin:0 auto;padding:0}.subscription-inner{width:100%;margin-left:0;padding-top:1px}}
 @media(min-width:1200px){

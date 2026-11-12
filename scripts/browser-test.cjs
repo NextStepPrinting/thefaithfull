@@ -103,7 +103,8 @@ const { chromium } = require('playwright');
       await page.keyboard.press('Escape');
       await page.waitForFunction(() => document.querySelector('.video-frame').childElementCount === 0);
       assert.equal(await page.locator('.video-frame iframe').count(), 0, 'Closing video must unload playback');
-      await page.goto(`${origin}/subscribe/`);
+      await page.getByRole('link', { name: 'Subscribe', exact: true }).click();
+      await page.waitForURL(`${origin}/subscribe/`);
       assert(await page.getByRole('heading', { name: 'JOIN OUR MAILING LIST' }).isVisible());
       await page.evaluate(() => document.fonts.ready);
       await page.screenshot({ path: path.join(root, 'test-results', `subscribe-${width}.png`), fullPage: true });
@@ -144,6 +145,8 @@ const { chromium } = require('playwright');
       assert.equal(page.url(), `${origin}/subscribe/`, 'Accepted signup must stay on the page');
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
       await page.screenshot({ path: path.join(root, 'test-results', `subscribe-confirmation-${width}.png`), fullPage: true });
+      await page.getByRole('link', { name: 'Back to home' }).click();
+      await page.waitForURL(`${origin}/`);
       await page.close();
       console.log(`PASS ${width}px: responsive layout, navigation, images, lightbox, console; embed wiring (external playback untested).`);
     }
