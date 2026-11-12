@@ -48,18 +48,17 @@ export async function onRequestPost({ request, env }) {
       return json({ error: 'verification' }, 400);
     }
 
-    // Create pending members only. Existing subscriptions and opt-outs stay intact.
+    // Create new members without updating existing subscriptions or opt-outs.
     const response = await fetch(mailchimpUrl, {
       method: 'POST',
       headers: {
         Authorization: `Basic ${btoa(`site:${env.MAILCHIMP_API_KEY}`)}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email_address: email, status: 'pending' }),
+      body: JSON.stringify({ email_address: email, status: 'subscribed' }),
       signal: AbortSignal.timeout(8000),
     });
     const member = await response.json();
-    if (response.ok && member.status === 'pending') return json({ status: 'pending' });
     if (response.ok && member.status === 'subscribed') return json({ status: 'subscribed' });
     if (response.status === 400 && ['Member Exists', 'Forgotten Email Not Subscribed', 'Member In Compliance State'].includes(member.title)) {
       return json({ status: 'handled' });

@@ -139,7 +139,7 @@ dialog::backdrop{background:rgba(0,0,0,.8)}
 .subscription-form{position:relative;margin-top:30px;text-align:left;font-size:0}
 .subscription-form input[type=email]:not([tabindex]){display:inline-block;width:calc(90% - 130px);height:40px;margin-bottom:10px;padding:6px 12px;background:#efefef;color:#555;border:1px solid #ccc;border-radius:3px;font:14px/20px Arial,sans-serif;vertical-align:top}
 .subscription-form input::placeholder{color:#999;opacity:1}
-.subscription-form button{display:inline-block;width:120px;margin:0 0 10px 10px;padding:10px 20px;border:0;border-radius:3px;background:var(--red);color:#fff;font:700 13px/20.8px 'Playfair Display',serif;vertical-align:top}
+.subscription-form button{display:inline-block;width:120px;margin:0 0 10px 10px;padding:10px 20px;border:0;border-radius:3px;background:var(--red);color:#fff;font:700 13px/20.8px Arial,sans-serif;vertical-align:top}
 .subscription-form button:hover{background:#b91616}
 .subscription-status{font:400 14px/21px Arial,sans-serif;text-align:left;color:#fff}
 .subscription-status:not(:empty){padding:12px 14px;background:#171717;border-left:3px solid #ccc;border-radius:3px}

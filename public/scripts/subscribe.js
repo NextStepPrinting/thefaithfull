@@ -76,14 +76,11 @@ signupForm.addEventListener('submit', async event => {
       signal: AbortSignal.timeout(18000),
     });
     const result = await response.json();
-    if (response.ok && result.status === 'pending') {
-      showSignupStatus('Check your inbox to confirm your subscription.', 'success');
-      signupForm.reset();
-    } else if (response.ok && result.status === 'subscribed') {
+    if (response.ok && result.status === 'subscribed') {
       showSignupStatus('You’re subscribed. Thanks for joining!', 'success');
       signupForm.reset();
     } else if (response.ok && result.status === 'handled') {
-      showSignupStatus('This address has already been used. Check your inbox for a confirmation email, or use the Mailchimp form to manage your signup.');
+      showSignupStatus('This address has already been used. You can manage your signup through the Mailchimp form.');
       signupFallback.hidden = false;
     } else if (result.error === 'email') {
       showSignupStatus('Enter a valid email address and try again.', 'error');

@@ -129,7 +129,7 @@ const { chromium } = require('playwright');
         assert.deepEqual(route.request().postDataJSON(), {
           email: 'signup-check@example.com', token: 'test-token', trap: '',
         });
-        return route.fulfill({ status, json: status === 200 ? { status: 'pending' } : { error: 'unavailable' } });
+        return route.fulfill({ status, json: status === 200 ? { status: 'subscribed' } : { error: 'unavailable' } });
       });
       await page.reload();
       await email.fill('signup-check@example.com');
@@ -139,7 +139,7 @@ const { chromium } = require('playwright');
       assert.equal(await email.inputValue(), 'signup-check@example.com', 'Keep email on error');
       status = 200;
       await subscribe.click();
-      await page.getByRole('status').filter({ hasText: 'Check your inbox' }).waitFor();
+      await page.getByRole('status').filter({ hasText: 'You’re subscribed. Thanks for joining!' }).waitFor();
       assert.equal(await email.inputValue(), '', 'Clear email after accepted signup');
       assert.equal(page.url(), `${origin}/subscribe/`, 'Accepted signup must stay on the page');
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
