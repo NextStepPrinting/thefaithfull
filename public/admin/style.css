@@ -1,0 +1,52 @@
+@font-face { font-family: Dosis; src: url('/assets/fonts/dosis.ttf') format('truetype'); font-weight: 200 800; font-display: swap; }
+:root { color-scheme: dark; font-family: system-ui, sans-serif; background: #090807; color: #fff; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 1000px; margin: auto; padding: 32px 24px; }
+header { display: flex; justify-content: space-between; gap: 20px; border-bottom: 1px solid #49413e; padding: 16px 0 28px; font-size: .8rem; letter-spacing: .18em; }
+a { color: #fff; }
+header a { font-weight: 800; text-decoration: none; }
+h1 { font: bold clamp(2.3rem, 6vw, 4.5rem) Dosis, sans-serif; margin: 44px 0 18px; }
+h2 { font: bold 1.8rem Dosis, sans-serif; }
+.intro { max-width: 620px; color: #dcdcdc; line-height: 1.7; margin-bottom: 36px; }
+section, article { border: 1px solid #49413e; background: #191615; padding: 24px; border-radius: 8px; }
+article { margin: 18px 0; background: #0e0c0b; }
+.toolbar, .actions, .login-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.toolbar { justify-content: space-between; }
+.toolbar h2 { margin: 0; }
+.login-row input { flex: 1; min-width: 160px; }
+.grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
+label { min-width: 0; display: block; font-size: .85rem; font-weight: 600; line-height: 1.6; }
+input, select, textarea { display: block; width: 100%; margin: 7px 0 0; border: 1px solid #716966; background: #090807; color: #fff; border-radius: 4px; padding: 12px; font: inherit; }
+input[type="date"] { appearance: none; -webkit-appearance: none; min-width: 0; max-width: 100%; }
+textarea { resize: vertical; min-height: 90px; }
+.full { grid-column: 1 / -1; }
+button { cursor: pointer; border: 1px solid #dd1c1c; border-radius: 4px; background: #dd1c1c; color: #fff; padding: 12px 18px; font: 700 .9rem system-ui, sans-serif; }
+button.secondary { background: transparent; color: #fff; }
+button:disabled { opacity: .5; cursor: wait; }
+:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.hint { font-size: .85rem; color: #dcdcdc; line-height: 1.6; }
+#message { line-height: 1.6; color: #fff; min-height: 1.6em; }
+.remove { margin-top: 18px; }
+.actions { margin-top: 24px; }
+footer { padding: 40px 0; color: #dcdcdc; font-size: .65rem; letter-spacing: .2em; }
+[hidden] { display: none !important; }
+@media (max-width: 600px) { .grid { grid-template-columns: minmax(0, 1fr); } section, article { padding: 18px; } .actions button { width: 100%; } }
+#past-shows, #venue-manager { margin-top: 24px; }
+summary { cursor: pointer; color: #fff; font-weight: 700; }
+select { min-width: 0; max-width: 100%; }
+
+
+body {
+  background: linear-gradient(#09080780, #090807 650px), url('/assets/images/black-electric-guitar-black-cement-floor.jpg') center top / auto 700px no-repeat;
+  min-height: 100vh;
+}
+header img { display: block; width: min(320px, 100%); height: auto; }
+h1, h2, h3 { font-family: Dosis, sans-serif; text-transform: uppercase; letter-spacing: .08em; }
+button:not(:disabled):hover { background: #b91515; }
+button.secondary:not(:disabled):hover { background: #341311; }
+#message:not(:empty) { background: #171717; border-left: 3px solid #dd1c1c; padding: 12px 14px; }
+@media (max-width: 400px) {
+  main { padding: 20px 14px; }
+  .login-row input { min-width: 0; }
+}

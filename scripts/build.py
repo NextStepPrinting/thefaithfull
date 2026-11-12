@@ -1,12 +1,18 @@
 """Build the static site using only Python's standard library."""
 import json
 import shutil
-from datetime import date
+from datetime import date, datetime
 from html import escape
 from pathlib import Path
 from urllib.parse import urlsplit
+from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parent.parent
+
+
+def upcoming_events(events):
+    today = datetime.now(ZoneInfo("America/Los_Angeles")).date()
+    return [event for event in events if date.fromisoformat(event["date"]) >= today]
 
 
 def render_events(events):
@@ -29,16 +35,16 @@ def render_events(events):
 
 def main():
     source = ROOT / "public"
-    events = json.loads((source / "data/events.json").read_text())
-    markup = render_events(events)
+    events = json.loads((source / "data/events.json").read_text(encoding="utf-8"))
+    markup = render_events(upcoming_events(events)) or "<p>More shows coming soon.</p>"
     output = ROOT / "dist"
     if output.exists():
         shutil.rmtree(output)
     shutil.copytree(source, output)
     page = output / "index.html"
-    html = page.read_text()
+    html = page.read_text(encoding="utf-8")
     assert html.count("<!-- EVENTS -->") == 1
-    page.write_text(html.replace("<!-- EVENTS -->", markup))
+    page.write_text(html.replace("<!-- EVENTS -->", markup), encoding="utf-8")
     print(f"Built dist/: {len(events)} events; no third-party build dependencies.")
 
 

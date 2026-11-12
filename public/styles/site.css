@@ -81,6 +81,8 @@ h1,h2,h3,p{margin:0}
 .ticket{display:inline-block;padding:10px 20px 12px;border:2px solid #fff;white-space:nowrap;font:700 10px/17.64px Dosis,sans-serif;letter-spacing:3px;text-transform:uppercase;color:#fff}
 .ticket:hover{color:#70655b;border-color:#70655b}
 .events .down{margin-top:50px}
+.event-links{display:flex;flex-direction:column;gap:8px;align-items:center}
+.event .event-notes{grid-column:1/-1;margin:0}
 .music{background:linear-gradient(#000b,#000b),url('/assets/images/IMG_8745.jpg') center/cover no-repeat}
 .music-columns{display:grid;grid-template-columns:1fr 1fr;gap:30px}
 .music-photo{width:100%;aspect-ratio:1;object-fit:cover}

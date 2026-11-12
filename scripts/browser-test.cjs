@@ -15,7 +15,9 @@ const { chromium } = require('playwright');
   let serverError;
   server.on('error', error => { serverError = error; });
   const report = [];
-  const eventCount = JSON.parse(readFileSync(path.join(root, 'public/data/events.json'), 'utf8')).length;
+  const startingEvents = JSON.parse(readFileSync(path.join(root, 'public/data/events.json'), 'utf8'));
+  const { todayInZone } = await import('../public/scripts/events-core.js');
+  const upcomingCount = startingEvents.filter(show => show.date >= todayInZone()).length;
   try {
     let ready = false;
     for (let attempt = 0; attempt < 50; attempt++) {
@@ -39,6 +41,19 @@ const { chromium } = require('playwright');
       page.on('pageerror', error => errors.push(error.message));
       page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
       page.on('response', response => { if (response.url().startsWith(origin) && response.status() >= 400) errors.push(`${response.status()} ${response.url()}`); });
+      let savedSchedule = null;
+      await page.route(`${origin}/api/events**`, async route => {
+        const request = route.request();
+        if (request.method() === 'PUT') {
+          assert.equal(request.headers().authorization, 'Bearer browser-test-key');
+          savedSchedule = request.postDataJSON();
+          return route.fulfill({ json: { revision: 1 } });
+        }
+        const admin = new URL(request.url()).searchParams.has('admin');
+        if (admin) assert.equal(request.headers().authorization, 'Bearer browser-test-key');
+        const events = savedSchedule?.events.filter(show => show.status === 'confirmed') ?? null;
+        await route.fulfill({ json: { events, venues: null, revision: 0 } });
+      });
       await page.goto(origin, { waitUntil: 'networkidle' });
       await page.evaluate(async () => {
         document.querySelectorAll('img').forEach(image => { image.loading = 'eager'; });
@@ -46,7 +61,7 @@ const { chromium } = require('playwright');
         await document.fonts.ready;
       });
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${width}: horizontal overflow`);
-      assert.equal(await page.locator('.event').count(), eventCount);
+      assert.equal(await page.locator('.event').count(), upcomingCount);
       assert.equal(await page.locator('[data-photo]').count(), 18);
       assert(await page.evaluate(() => [...document.querySelectorAll('img[src]')].every(image => image.complete && image.naturalWidth > 0)), 'All images must decode');
       assert(await page.evaluate(() => document.fonts.check('26px Dosis') && document.fonts.check('14px "Playfair Display"')), 'Local fonts must load');
@@ -103,6 +118,7 @@ const { chromium } = require('playwright');
       await page.keyboard.press('Escape');
       await page.waitForFunction(() => document.querySelector('.video-frame').childElementCount === 0);
       assert.equal(await page.locator('.video-frame iframe').count(), 0, 'Closing video must unload playback');
+      await page.route(`${origin}/api/subscribe`, route => route.fulfill({ json: { siteKey: null } }));
       await page.getByRole('link', { name: 'Subscribe', exact: true }).click();
       await page.waitForURL(`${origin}/subscribe/`);
       assert(await page.getByRole('heading', { name: 'JOIN OUR MAILING LIST' }).isVisible());
@@ -147,12 +163,34 @@ const { chromium } = require('playwright');
       await page.screenshot({ path: path.join(root, 'test-results', `subscribe-confirmation-${width}.png`), fullPage: true });
       await page.getByRole('link', { name: 'Back to home' }).click();
       await page.waitForURL(`${origin}/`);
+      errors.length = 0; // The signup test above intentionally received a 502.
+      await page.goto(`${origin}/admin/`);
+      await page.getByLabel('Manager sign-in key').fill('browser-test-key');
+      await page.getByRole('button', { name: 'Sign in' }).click();
+      await page.getByText('Starting schedule loaded.', { exact: false }).waitFor();
+      await page.locator('#past-shows').evaluate(details => { details.open = true; });
+      assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${width}: manager horizontal overflow`);
+      await page.screenshot({ path: path.join(root, 'test-results', `show-manager-${width}.png`), fullPage: true });
+      page.once('dialog', dialog => dialog.accept());
+      await page.getByRole('button', { name: 'Save schedule', exact: true }).click();
+      await page.getByText('Schedule and venues saved.', { exact: false }).waitFor();
+      assert.equal(savedSchedule.events.length, startingEvents.length);
+      assert.deepEqual(savedSchedule.events.map(({ date, venue, city, tickets_url }) => ({
+        date, venue, location: city, url: tickets_url
+      })), startingEvents, 'First save must preserve the existing shows and order');
+      savedSchedule.events.push({ date: todayInZone(), venue: 'Test venue <safe text>', city: 'Test city', status: 'confirmed' });
+      savedSchedule.events.push({ date: '2000-01-01', venue: 'Old test venue', city: 'Test city', status: 'confirmed' });
+      savedSchedule.events.forEach((show, index) => { if (index < startingEvents.length) show.status = 'draft'; });
+      await page.goto(origin);
+      await page.getByRole('heading', { name: 'Test venue <safe text>' }).waitFor();
+      assert.equal(await page.locator('.event').count(), 1);
+      assert.deepEqual(errors, [], `${width}: browser errors`);
       await page.close();
       console.log(`PASS ${width}px: responsive layout, navigation, images, lightbox, console; embed wiring (external playback untested).`);
     }
     const noJS = await browser.newPage({ javaScriptEnabled: false });
     await noJS.goto(origin);
-    assert.equal(await noJS.locator('.event').count(), eventCount);
+    assert.equal(await noJS.locator('.event').count(), upcomingCount);
     assert(await noJS.locator('audio[controls]').isVisible());
     await noJS.close();
     writeFileSync(path.join(root, 'test-results', 'browser-results.json'), JSON.stringify(report, null, 2) + '\n');

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Show Manager | The Faithfull</title>
+  <link rel="stylesheet" href="/admin/style.css">
+  <script type="module" src="/admin/admin.js"></script>
+</head>
+<body>
+  <main>
+    <header><a href="/"><img src="/assets/images/TF_Logo-LB_Glow.png" alt="The Faithfull — home"></a></header>
+    <h1>Show manager</h1>
+    <p class="intro">Manage live dates, ticket links, and saved venues.</p>
+    <section id="login-panel">
+      <form id="login-form">
+        <label for="key">Manager sign-in key</label>
+        <div class="login-row"><input id="key" type="password" autocomplete="current-password" required><button>Sign in</button></div>
+        <p class="hint">Use the private key set up for this site. Your key stays in memory and is cleared when you reload or sign out.</p>
+      </form>
+    </section>
+    <p id="message" role="status" aria-live="polite"></p>
+    <section id="manager" hidden>
+      <div class="toolbar"><h2>Your schedule</h2><button id="logout" class="secondary">Sign out</button></div>
+      <p class="hint">Confirmed shows appear on the site through the end of their show date in Pacific time. Past shows stay here for your records. Venue names can be left blank until announced.</p>
+      <h3>Upcoming shows</h3>
+      <div id="events"></div>
+      <details id="past-shows">
+        <summary>Past shows</summary>
+        <p class="hint">The download includes saved past shows and private booking notes. Keep it private.</p>
+        <button id="download-past" class="secondary" type="button">Download past shows (CSV)</button>
+        <div id="past-events"></div>
+      </details>
+      <details id="venue-manager">
+        <summary>Manage venues (<span id="venue-count">0 saved venues</span>)</summary>
+        <p class="hint">Saved venues stay available after shows are removed. Edit or delete them here, then select Save schedule. Existing shows keep their own details.</p>
+        <div id="venue-list"></div>
+      </details>
+      <div class="actions"><button id="add" class="secondary">+ Add show</button><button id="save">Save schedule</button><button id="reload" class="secondary">Reload saved schedule</button></div>
+      <p class="hint">The website checks for saved changes when opened and once a minute while open. Reloading here discards unsaved edits.</p>
+    </section>
+    <footer><a href="/">Back to The Faithfull</a></footer>
+  </main>
+</body>
+</html>
