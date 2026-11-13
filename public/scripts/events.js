@@ -11,8 +11,8 @@ function element(tag, text, className) {
   return node;
 }
 
-function link(url, label) {
-  const anchor = element('a', label, 'ticket');
+function link(url, label, className) {
+  const anchor = element('a', label, className);
   anchor.href = url;
   anchor.target = '_blank';
   anchor.rel = 'noopener noreferrer';
@@ -25,10 +25,18 @@ function showCard(show) {
   const date = element('time', `${month}.${day}.${year.slice(-2)}`);
   date.dateTime = show.date;
   const actions = element('div', '', 'event-links');
-  if (show.tickets_url) actions.append(link(show.tickets_url, 'Info & Tickets'));
-  if (show.map_url) actions.append(link(show.map_url, 'Map'));
+  if (show.tickets_url) actions.append(link(show.tickets_url, 'Info & Tickets', 'ticket'));
+  const city = element('p', show.map_url ? '' : show.city);
+  if (show.map_url) {
+    const directions = link(show.map_url, show.city, 'event-map-link');
+    directions.setAttribute('aria-label', `${show.city} — directions (opens in a new tab)`);
+    const arrow = element('span', ' ↗');
+    arrow.setAttribute('aria-hidden', 'true');
+    directions.append(arrow);
+    city.append(directions);
+  }
   card.append(date, element('h3', show.venue || 'Venue to be announced'),
-    element('p', show.city), actions);
+    city, actions);
   if (show.notes) card.append(element('p', show.notes, 'event-notes'));
   return card;
 }
