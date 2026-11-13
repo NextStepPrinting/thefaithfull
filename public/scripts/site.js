@@ -2,13 +2,44 @@
 const menu = document.querySelector('.mobile-menu');
 const menuToggle = document.querySelector('.menu-toggle');
 if (menu && menuToggle) {
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  let reveal;
+  let closing = false;
+
+  async function closeMenu() {
+    if (!menu.open || closing) return;
+    closing = true;
+    if (reveal && !reduceMotion.matches) {
+      reveal.reverse();
+      // A resize can close the dialog and cancel the animation early.
+      await reveal.finished.catch(() => {});
+    }
+    if (menu.open) menu.close();
+  }
+
   menuToggle.addEventListener('click', () => {
+    if (menu.open || closing) return;
     menu.showModal();
     menuToggle.setAttribute('aria-expanded', 'true');
+    if (!reduceMotion.matches) {
+      reveal = menu.animate(
+        [{ clipPath: 'inset(0 0 100% 0)' }, { clipPath: 'inset(0)' }],
+        { duration: 420, easing: 'ease-out', fill: 'both' }
+      );
+    }
   });
-  menu.querySelector('.menu-close').addEventListener('click', () => menu.close());
-  menu.querySelectorAll('nav a').forEach(link => link.addEventListener('click', () => menu.close()));
-  menu.addEventListener('close', () => menuToggle.setAttribute('aria-expanded', 'false'));
+  menu.querySelector('.menu-close').addEventListener('click', closeMenu);
+  menu.querySelectorAll('nav a').forEach(link => link.addEventListener('click', closeMenu));
+  menu.addEventListener('cancel', event => {
+    event.preventDefault();
+    closeMenu();
+  });
+  menu.addEventListener('close', () => {
+    reveal?.cancel();
+    reveal = undefined;
+    closing = false;
+    menuToggle.setAttribute('aria-expanded', 'false');
+  });
   matchMedia('(min-width: 993px)').addEventListener('change', event => {
     if (event.matches && menu.open) menu.close();
   });

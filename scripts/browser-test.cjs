@@ -74,12 +74,16 @@ const { chromium } = require('playwright');
         assert.equal(await page.locator('.menu-toggle').getAttribute('aria-expanded'), 'true');
         await page.locator('#mobile-menu nav').getByRole('link', { name: 'Events', exact: true }).click();
         assert.equal(new URL(page.url()).hash, '#tour-dates');
-        assert(!await page.locator('#mobile-menu').evaluate(element => element.open));
         await page.waitForFunction(() => document.querySelector('.menu-toggle').getAttribute('aria-expanded') === 'false');
         await page.getByRole('button', { name: 'Open navigation' }).click();
+        await page.locator('#mobile-menu').evaluate(menu => menu.getAnimations()[0].finished);
         await page.keyboard.press('Escape');
+        await page.waitForFunction(() => {
+          const menu = document.querySelector('#mobile-menu');
+          return menu.open && menu.getAnimations().some(animation => animation.playbackRate < 0);
+        });
         await page.waitForFunction(() => document.querySelector('.menu-toggle').getAttribute('aria-expanded') === 'false');
-        assert.equal(await page.locator('.menu-toggle').getAttribute('aria-expanded'), 'false');
+        assert(await page.locator('.menu-toggle').evaluate(toggle => document.activeElement === toggle));
       } else {
         await page.locator('.desktop-nav').getByRole('link', { name: 'Events', exact: true }).click();
         assert.equal(new URL(page.url()).hash, '#tour-dates');

@@ -40,10 +40,6 @@ h1,h2,h3,p{margin:0}
 .mobile-menu nav a{font:400 22px/40px Dosis,sans-serif;text-transform:uppercase}
 .menu-close{position:absolute;right:30px;top:20px;width:44px;height:44px;padding:0;border:0;background:transparent;font:32px/1 Dosis,sans-serif}
 .menu-socials{display:flex;justify-content:center;gap:30px;color:#aaa;margin:clamp(24px,8vh,70px) 0 24px}
-@media(prefers-reduced-motion:no-preference){
-  .mobile-menu[open]{animation:menu-reveal .42s ease-out}
-  @keyframes menu-reveal{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0)}}
-}
 .intro{height:100vh;min-height:540px;position:relative;background:#000 url('/assets/images/Website-Home-Pic_3-scaled.jpg') center/cover no-repeat}
 .intro::before{content:'';position:absolute;inset:0;background:linear-gradient(rgba(10,10,10,.1),rgba(10,10,10,.6))}
 .hero-inner{position:relative;width:85%;margin:auto;padding:12vh 45px 0 15px}
