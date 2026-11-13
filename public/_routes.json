@@ -1,5 +1,5 @@
 {
   "version": 1,
-  "include": ["/api/subscribe"],
+  "include": ["/api/subscribe", "/api/events"],
   "exclude": []
 }

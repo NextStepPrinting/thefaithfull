@@ -1,6 +1,6 @@
 # The Faithfull
 
-A static migration of [thefaithfullpjtribute.com](https://thefaithfullpjtribute.com/), preserving the existing black/red branding, imagery, copy, section order, events, music links, gallery, and booking details. HTML, CSS, and a small JavaScript module replace WordPress and the Kallyas page builder. There are **no production npm dependencies** or server-side application services.
+A static migration of [thefaithfullpjtribute.com](https://thefaithfullpjtribute.com/), preserving the existing black/red branding, imagery, copy, section order, events, music links, gallery, and booking details. HTML, CSS, and a small JavaScript module replace WordPress and the Kallyas page builder. There are **no production npm dependencies**. Cloudflare Pages Functions handle signup and the show manager.
 
 This work lives on `feature/static-site-migration`. No production deployment or DNS changes have been made. The original repository had no commits or `main` branch when the migration began.
 
@@ -15,7 +15,7 @@ python3 scripts/serve.py
 
 The local server listens on port 8000. Rebuild after editing source files, then refresh the browser. `scripts/serve.py` supports byte ranges so the MP3 can be played and seeked locally. The build safely replaces only the generated `dist/` directory; do not edit files there.
 
-Optional browser validation uses Node.js 20+ and Playwright:
+Full validation uses Node.js 22.13+ and Playwright:
 
 ```sh
 npm ci
@@ -99,9 +99,19 @@ Edit **only `public/data/events.json`** to update event content, then rebuild. E
 }
 ```
 
-Dates use ISO `YYYY-MM-DD`; the build displays `MM.DD.YY` without browser timezone conversions. Ticket URLs must use HTTPS. Array order determines display order. Events are neither filtered nor automatically removed: the two original listings, including the October 17 event, are intentionally preserved. Text is HTML-escaped by `render_events()` in `scripts/build.py`; layout belongs to `.event` in the stylesheet.
+Dates use ISO `YYYY-MM-DD`; the build displays `MM.DD.YY` without browser timezone conversions. Ticket URLs must use HTTPS. Array order determines display order. The JSON file seeds an empty D1 schedule and supplies the build-time fallback. After the first save, D1 is the live source. Confirmed shows stay public through the end of their date in Pacific time. Past shows remain in the manager. Text is HTML-escaped by `render_events()` in `scripts/build.py`; layout belongs to `.event` in the stylesheet.
 
 Google Sheets is **not implemented**. The four-field data shape and `.event` markup form the boundary for a future data adapter. That adapter can supply the same records to the renderer (or a runtime equivalent) without redesigning the section. No Google credentials, sheet IDs, API keys, or speculative endpoints are included.
+
+## Show manager on Cloudflare Pages
+
+1. In Cloudflare, open **D1 SQL Database → Create database**. Name the preview database `thefaithfull-events-preview`. In that database's **Console**, run the SQL from [db/schema.sql](db/schema.sql).
+2. Open **Workers & Pages → thefaithfull → Settings**, select **Preview**, and add a **D1 database binding** named `EVENTS_DB` under **Bindings**. Select the preview database.
+3. Under **Variables and secrets**, add an encrypted secret named `ADMIN_TOKEN`. Use a password manager to generate a random key of at least 32 characters. Enter it directly in Cloudflare and use it to sign in at `/admin/`.
+4. Deploy the feature branch to Preview. Open `/admin/` on that deployment, sign in, and select **Save schedule** to initialize the database with the existing shows and venue catalog. Verify that an upcoming Confirmed show appears on the homepage and a Draft does not. The public API is `/api/events`; the admin read and all saves require the sign-in key.
+5. For production, repeat database creation and schema setup with a separate database named `thefaithfull-events`, then configure `EVENTS_DB` and a separate `ADMIN_TOKEN` in **Production**. After deploying to `main`, sign in on the production site and save the starting schedule there. Preview edits stay in the preview database.
+
+The build command and output directory stay `python3 scripts/build.py` and `dist`. If the schedule has never been saved or the API is unavailable, visitors see the build-time fallback filtered to upcoming dates. The static fallback is generated at build time. With JavaScript enabled the homepage also removes expired rows while open.
 
 ## External integrations and remaining limitations
 

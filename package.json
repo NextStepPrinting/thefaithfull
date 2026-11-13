@@ -7,7 +7,7 @@
     "build": "python3 scripts/build.py",
     "start": "python3 scripts/serve.py",
     "check": "python3 scripts/check.py",
-    "test": "npm run build && npm run check && node scripts/browser-test.cjs"
+    "test": "npm run build && npm run check && node --test tests/events.test.mjs && node scripts/browser-test.cjs"
   },
   "devDependencies": {
     "playwright": "1.62.1"
