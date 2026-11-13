@@ -34,12 +34,14 @@ h1,h2,h3,p{margin:0}
 .menu-toggle{display:none;border:0;background:transparent;padding:0;width:20px;height:22px;margin-right:40px}
 .menu-toggle span{display:block;height:2px;width:20px;background:#aaa;margin:4px 0}
 .mobile-menu{width:100%;max-width:none;height:100%;max-height:none;margin:0;padding:0;border:0;background:var(--body);color:#ccc;z-index:30}
+.mobile-menu::backdrop{background:transparent}
 .mobile-menu nav{display:flex;flex-direction:column;align-items:center;gap:clamp(10px,4vh,30px);padding-top:65px}
+.mobile-menu nav:focus{outline:none}
 .mobile-menu nav a{font:400 22px/40px Dosis,sans-serif;text-transform:uppercase}
-.menu-close{position:absolute;right:30px;top:26px;border:0;background:transparent;font:32px/40px Dosis,sans-serif}
+.menu-close{position:absolute;right:30px;top:20px;width:44px;height:44px;padding:0;border:0;background:transparent;font:32px/1 Dosis,sans-serif}
 .menu-socials{display:flex;justify-content:center;gap:30px;color:#aaa;margin:clamp(24px,8vh,70px) 0 24px}
 @media(prefers-reduced-motion:no-preference){
-  .mobile-menu[open]{animation:menu-reveal .32s cubic-bezier(.22,1,.36,1)}
+  .mobile-menu[open]{animation:menu-reveal .42s ease-out}
   @keyframes menu-reveal{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0)}}
 }
 .intro{height:100vh;min-height:540px;position:relative;background:#000 url('/assets/images/Website-Home-Pic_3-scaled.jpg') center/cover no-repeat}
