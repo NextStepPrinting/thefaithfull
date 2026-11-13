@@ -178,12 +178,16 @@ const { chromium } = require('playwright');
       assert.deepEqual(savedSchedule.events.map(({ date, venue, city, tickets_url }) => ({
         date, venue, location: city, url: tickets_url
       })), startingEvents, 'First save must preserve the existing shows and order');
-      savedSchedule.events.push({ date: todayInZone(), venue: 'Test venue <safe text>', city: 'Test city', status: 'confirmed' });
+      savedSchedule.events.push({ date: todayInZone(), venue: 'Test venue <safe text>', city: 'Test city', status: 'confirmed',
+        map_url: 'https://example.com/map', tickets_url: 'https://example.com/tickets' });
       savedSchedule.events.push({ date: '2000-01-01', venue: 'Old test venue', city: 'Test city', status: 'confirmed' });
       savedSchedule.events.forEach((show, index) => { if (index < startingEvents.length) show.status = 'draft'; });
       await page.goto(origin);
       await page.getByRole('heading', { name: 'Test venue <safe text>' }).waitFor();
       assert.equal(await page.locator('.event').count(), 1);
+      const directions = page.getByRole('link', { name: 'Test city — directions (opens in a new tab)' });
+      assert.equal(await directions.getAttribute('href'), 'https://example.com/map');
+      assert.equal(await page.locator('.event .ticket').count(), 1);
       assert.deepEqual(errors, [], `${width}: browser errors`);
       await page.close();
       console.log(`PASS ${width}px: responsive layout, navigation, images, lightbox, console; embed wiring (external playback untested).`);
