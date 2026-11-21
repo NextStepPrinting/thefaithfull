@@ -140,7 +140,7 @@ dialog::backdrop{background:rgba(0,0,0,.8)}
 .subscription{min-height:100vh;display:flex;align-items:center;background:linear-gradient(rgba(10,10,10,.6),rgba(10,10,10,.6)),url('/assets/images/black-electric-guitar-black-cement-floor.jpg') center top/cover no-repeat}
 .subscription-container{width:85%;margin:auto;padding:0 15px}
 .subscription-inner{width:50%;min-height:76vh;margin-left:calc(25% - 15px);padding:0 15px;text-align:center}
-.subscription-logo{width:625px;margin:0 auto 30px}
+.subscription-logo{width:675px;margin:0 auto 30px}
 .subscription h1{font:400 36px/46px Dosis,sans-serif;color:#fff;margin:0;padding-bottom:12px}
 .subscription-form{position:relative;margin-top:30px;text-align:left;font-size:0}
 .subscription-form input[type=email]:not([tabindex]){display:inline-block;width:calc(90% - 130px);height:40px;margin-bottom:10px;padding:6px 12px;background:#efefef;color:#555;border:1px solid #ccc;border-radius:3px;font:14px/20px Arial,sans-serif;vertical-align:top}
@@ -157,7 +157,7 @@ dialog::backdrop{background:rgba(0,0,0,.8)}
 .subscription-back a{text-decoration:underline}
 .subscription-trap{position:absolute;left:-5000px;width:1px;height:1px;overflow:hidden}
 @media(max-width:767px){.subscription{align-items:flex-start}.subscription-container{margin:0 auto;padding:0}.subscription-inner{width:100%;margin-left:0;padding-top:1px}}
-@media(min-width:768px){.subscription-logo{position:relative;top:-25px}}
+@media(min-width:768px){.subscription-logo{position:relative;top:-75px}}
 @media(min-width:1200px){
   .section>.container{transform:translateX(-15px)}
   .header-inner{transform:translateX(24px)}
