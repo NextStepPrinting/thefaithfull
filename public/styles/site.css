@@ -141,26 +141,28 @@ dialog::backdrop{background:rgba(0,0,0,.8)}
 .subscription-container{width:85%;margin:auto;padding:0 15px}
 .subscription-inner{width:50%;max-width:705px;min-height:76vh;margin:0 auto;padding:0 15px;text-align:center}
 .subscription-logo{width:675px;margin:0 auto 30px}
+.subscription-content{position:relative;isolation:isolate}
+.subscription-content::before{content:"";position:absolute;inset:-45px -20px;z-index:-1;pointer-events:none;background:radial-gradient(ellipse,rgba(0,0,0,.85) 0%,rgba(0,0,0,.7) 45%,transparent 75%)}
 .subscription h1{font:400 36px/46px Dosis,sans-serif;color:#fff;margin:0;padding-bottom:12px}
 .subscription-form{position:relative;margin-top:30px;text-align:left;font-size:0}
-.subscription-description{font:400 14px/22px Arial,sans-serif;color:#fff}
-.subscription-form>label{display:block;margin-bottom:8px;color:#fff;font:400 14px/22px Arial,sans-serif}
+.subscription-description{font:400 16px/24px Arial,sans-serif;color:#fff}
+.subscription-form>label{display:block;margin-bottom:8px;color:#fff;font:400 16px/24px Arial,sans-serif}
 .subscription-form input[type=email]:not([tabindex]){display:inline-block;width:calc(90% - 130px);height:40px;margin-bottom:10px;padding:6px 12px;background:#efefef;color:#555;border:1px solid #ccc;border-radius:3px;font:14px/20px Arial,sans-serif;vertical-align:top}
 .subscription-form input::placeholder{color:#666;opacity:1}
 .subscription-form button{display:inline-block;width:120px;margin:0 0 10px 10px;padding:10px 20px;border:0;border-radius:3px;background:var(--red);color:#fff;font:700 13px/20.8px Arial,sans-serif;vertical-align:top}
 .subscription-form button:hover{background:#b91616}
-.subscription-status{font:400 14px/21px Arial,sans-serif;text-align:left;color:#fff}
+.subscription-status{font:400 16px/24px Arial,sans-serif;text-align:left;color:#fff}
 .subscription-status:not(:empty){padding:12px 14px;background:#171717;border-left:3px solid #ccc;border-radius:3px}
 .subscription-status[data-state=success]{border-color:#83ca97}
 .subscription-status[data-state=error]{border-color:var(--red)}
-.subscription-fallback{text-align:left;font:400 14px/21px Arial,sans-serif}
+.subscription-fallback{text-align:left;font:400 16px/24px Arial,sans-serif}
 .subscription-fallback a{text-decoration:underline}
-.subscription-back{text-align:left;margin-top:16px;color:#fff;font:400 14px/22px Arial,sans-serif}
+.subscription-back{text-align:left;margin-top:16px;color:#fff;font:400 16px/24px Arial,sans-serif}
 .subscription-back a{text-decoration:underline}
 .subscription-trap{position:absolute;left:-5000px;width:1px;height:1px;overflow:hidden}
 @media(max-width:767px){.subscription{align-items:flex-start}.subscription-container{margin:0 auto;padding:0}.subscription-inner{width:100%;margin-left:0;padding-top:1px}}
 @media(max-width:767px){.subscription-form input[type=email]:not([tabindex]){width:100%;height:44px;font-size:16px}.subscription-form button{width:100%;min-height:44px;margin-left:0}}
-@media(min-width:768px){.subscription-inner{transform:translateX(-15px)}.subscription-logo{position:relative;top:-75px;margin-bottom:0}.subscription h1{margin-top:-30px}}
+@media(min-width:768px){.subscription-inner{transform:translateX(-15px)}.subscription-content::before{inset:-50px -60px}.subscription-logo{position:relative;top:-75px;margin-bottom:0}.subscription h1{margin-top:-30px}}
 @media(min-width:1200px){
   .section>.container{transform:translateX(-15px)}
   .header-inner{transform:translateX(24px)}
