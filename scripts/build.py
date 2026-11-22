@@ -2,6 +2,7 @@
 import json
 import shutil
 from datetime import date, datetime
+from hashlib import sha256
 from html import escape
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -41,10 +42,21 @@ def main():
     if output.exists():
         shutil.rmtree(output)
     shutil.copytree(source, output)
+    stylesheet = output / "styles/site.css"
+    version = sha256(stylesheet.read_bytes()).hexdigest()[:12]
+    versioned_stylesheet = stylesheet.with_name(f"site.{version}.css")
+    shutil.copyfile(stylesheet, versioned_stylesheet)
     page = output / "index.html"
     html = page.read_text(encoding="utf-8")
     assert html.count("<!-- EVENTS -->") == 1
     page.write_text(html.replace("<!-- EVENTS -->", markup), encoding="utf-8")
+    for page in output.rglob("*.html"):
+        html = page.read_text(encoding="utf-8")
+        if 'href="/styles/site.css"' in html:
+            page.write_text(
+                html.replace('href="/styles/site.css"', f'href="/styles/{versioned_stylesheet.name}"'),
+                encoding="utf-8",
+            )
     print(f"Built dist/: {len(events)} events; no third-party build dependencies.")
 
 
